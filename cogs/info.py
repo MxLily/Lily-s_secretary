@@ -10,10 +10,16 @@ class Info(commands.Cog):
 
     @commands.command()
     async def info(self, ctx):
-        await ctx.send("<:info:718551227809660948> **Info** <:info:718551227809660948>")
-        await ctx.send("__**Liste des commandes :**__")
-        await ctx.send("\t**&github** : Lien vers mon github")
+        embed = discord.Embed(
+            title = '<:info:718551227809660948> Liste des commandes <:info:718551227809660948>',
+            colour = discord.Colour.red()
+        )
+        embed.set_footer(text='MxCommunity')
+        embed.add_field(name='Help', value='• &info\n', inline=True)
+        embed.add_field(name='Lily', value='• &github\n', inline=True)
+        embed.add_field(name='Dev', value='• &framework\n', inline=True)
 
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Info(bot))
