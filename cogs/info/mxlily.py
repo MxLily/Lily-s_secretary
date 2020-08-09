@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 
-# Print Site
 
 class MxLily(commands.Cog):
 
