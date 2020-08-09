@@ -14,7 +14,7 @@ class Info(commands.Cog):
             title = '<:info:718551227809660948> Liste des commandes <:info:718551227809660948>',
             colour = discord.Colour.red()
         )
-        embed.set_footer(text='MxCommunity')
+        embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
         embed.add_field(name='Help', value='• &info\n', inline=True)
         embed.add_field(name='Lily', value='• &github\n', inline=True)
         embed.add_field(name='Dev', value='• &framework\n', inline=True)

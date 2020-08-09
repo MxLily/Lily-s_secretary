@@ -12,7 +12,7 @@ class Framework(commands.Cog):
             title = 'Les meilleurs framework',
             colour = discord.Colour.red()
         )
-        embed.set_footer(text='MxCommunity')
+        embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
         embed.add_field(name='PHP', value='• Laravel\n• Symfony\n• CakePHP', inline=True)
         embed.add_field(name='JS', value='• Angular\n• React\n• Vue.js', inline=True)
         embed.add_field(name='CSS', value='• Bootstrap\n• Tailwind\n• Foundation', inline=True)
