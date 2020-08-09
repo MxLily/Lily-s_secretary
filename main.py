@@ -14,8 +14,8 @@ load_dotenv()
 @bot.event
 async def on_ready():
     print("Lily's Secretary :  ON")
-    print("Version : 1.0.2")
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Secrétaire Officiel De Lily"))
+    print("Version : 1.0.3")
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("Secrétaire Officiel De la MxCommunity"))
 
 @bot.command()
 async def load(ctx, extension):
