@@ -12,12 +12,13 @@ class Info(commands.Cog):
     async def info(self, ctx):
         embed = discord.Embed(
             title = '<:info:718551227809660948> Liste des commandes <:info:718551227809660948>',
-            colour = discord.Colour.red()
+            description = 'Bienvenue sur MxCommuity, voici un résumé des commandes disponible sur le Discord',
+            colour = discord.Colour.purple()
         )
+
         embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
-        embed.add_field(name='Help', value='• &info\n', inline=True)
-        embed.add_field(name='Lily', value='• &github\n', inline=True)
-        embed.add_field(name='Dev', value='• &framework\n', inline=True)
+        embed.add_field(name='Info', value='• &info\n• &help\n• &mxlily\n• &brokeos\n', inline=True)
+        #embed.add_field(name='Dev', value='• &framework\n', inline=True)
 
         await ctx.send(embed=embed)
 
