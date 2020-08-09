@@ -10,7 +10,7 @@ class Logiciel(commands.Cog):
     async def logiciel(self, ctx):
         embed = discord.Embed(
             title = 'Les meilleurs logiciels pour développer',
-            colour = discord.Colour.red()
+            colour = discord.Colour.purple()
         )
         embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
         embed.add_field(name='Editeurs de textes', value='• Visual Studio Code (multi-langage)\n• Sublime Text (multi-langage)\n• pyCharm (Python)\n• Eclipse (Java)\n• IntelliJ (Java)\n• Android Studio (Java & Kotlin)\n• Aptana Studio 3 (HTML - CSS  - JS)\n• PhpStorm (PHP)\n• WebStorm (JavaScript)\n• RubyMine (Ruby)', inline=True)
