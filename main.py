@@ -37,12 +37,16 @@ async def load(ctx, extension):
 async def unload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
 
+currentFolder = os.path.realpath(__file__)[:(len(__file__) * -1)]
+folderToFind = 'cogs'
 fileExtension = '.py'
+
 finder = FileFinder()
-files = finder.find('./cogs', fileExtension)
+files = finder.find(currentFolder + folderToFind, fileExtension)
+
 
 for filename in files:
-    toLoad = filename[2:(len(fileExtension) * -1)].replace('/', '.')
+    toLoad = filename[len(currentFolder):(len(fileExtension) * -1)].replace('/', '.')
     bot.load_extension(toLoad)
 
 jeton = os.getenv('DISCORD_TOKEN')
