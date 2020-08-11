@@ -1,7 +1,7 @@
 import discord
 import os
 import dotenv
-from discord.utils import get
+from discord.utils import get, find
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -10,8 +10,14 @@ from fileFinder import FileFinder
 print("Start...")
 
 bot = discord.Client()
-bot = commands.Bot(command_prefix='&')
+bot = commands.Bot(command_prefix='!')
 load_dotenv()
+
+GUILD = os.getenv('DISCORD_GUILD_ID')
+if GUILD:
+    GUILD = int(GUILD)
+
+
 
 @bot.event
 async def on_ready():
@@ -22,6 +28,31 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, exception):
     await ctx.send(str(exception))
+
+@bot.event
+async def on_member_join(member):
+    guild = find(lambda g: g.id == GUILD, bot.guilds)
+    if guild:
+        role = get(guild.roles, name=">> Invité <<")
+        if role:
+            await member.add_roles(role)
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    message = payload.message_id
+    member = payload.member
+    emoji = payload.emoji
+    if message == 742853196841615421 and emoji.name == "valide":
+        currentRole = get(member.roles, name=">> Invité <<")
+        if currentRole:
+            guild = find(lambda g: g.id == GUILD, bot.guilds)
+            if guild:
+                roleToAdd = get(guild.roles, name=">> Membre <<")
+                if roleToAdd:
+                    await member.add_roles(roleToAdd)
+                roleToRemove = get(guild.roles, name=">> Invité <<")
+                if roleToRemove:
+                    await member.remove_roles(roleToRemove)
 
 @bot.command()
 @commands.is_owner()
