@@ -1,6 +1,8 @@
 import discord
-import os
 import dotenv
+import json
+import os
+
 from discord.utils import get, find
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -13,11 +15,11 @@ bot = discord.Client()
 bot = commands.Bot(command_prefix='!')
 load_dotenv()
 
-GUILD = os.getenv('DISCORD_GUILD_ID')
-if GUILD:
-    GUILD = int(GUILD)
+GUILD = int(os.getenv('DISCORD_GUILD_ID', '0'))
 
-
+params = {}
+with open('params.json', 'r', encoding='utf-8') as f:
+    params = json.load(f)
 
 @bot.event
 async def on_ready():
@@ -29,30 +31,74 @@ async def on_ready():
 async def on_command_error(ctx, exception):
     await ctx.send(str(exception))
 
-@bot.event
-async def on_member_join(member):
+async def addRoles(member, roles):
     guild = find(lambda g: g.id == GUILD, bot.guilds)
     if guild:
-        role = get(guild.roles, name=">> Invité <<")
-        if role:
-            await member.add_roles(role)
+        if isinstance(roles, str):
+            role = get(guild.roles, name=roles)
+            if role:
+                await member.add_roles(role)
+        elif isinstance(roles, list):
+            rolesToAdd = []
+            for it in roles:
+                role = get(guild.roles, name=it)
+                if role:
+                    rolesToAdd.append(role)
+            await member.add_roles(*rolesToAdd)
+
+async def removeRoles(member, roles):
+    guild = find(lambda g: g.id == GUILD, bot.guilds)
+    if guild:
+        if isinstance(roles, str):
+            role = get(guild.roles, name=roles)
+            if role:
+                await member.remove_roles(role)
+        elif isinstance(roles, list):
+            rolesToRemove = []
+            for it in roles:
+                role = get(guild.roles, name=it)
+                if role:
+                    rolesToRemove.append(role)
+            await member.remove_roles(*rolesToRemove)
+
+async def hasRoles(member, roles):
+    if isinstance(roles, str):
+        return get(member.roles, name=roles)
+    elif isinstance(roles, list):
+        containsAll = True
+        for role in roles:
+            if isinstance(role, str) and not get(member.roles, name=role):
+                containsAll = None
+                break
+        return containsAll
+    return None
+
+@bot.event
+async def on_member_join(member):
+    try:
+        await addRoles(member, params['onJoinRolesToAdd'])
+    except KeyError as error:
+        print(error)
+    except Exception as error:
+        print(error)
+
+# TODO <=> ON MEMBER LEAVE  =>  Remove reaction on rules for member so that he reads them again if he rejoins
+# ? TODO <=> Gather addRoles and removeRoles to avoid duplicated code, by using function pointer on member.add_roles and member.remove_roles
 
 @bot.event
 async def on_raw_reaction_add(payload):
     message = payload.message_id
     member = payload.member
     emoji = payload.emoji
-    if message == 742853196841615421 and emoji.name == "valide":
-        currentRole = get(member.roles, name=">> Invité <<")
-        if currentRole:
-            guild = find(lambda g: g.id == GUILD, bot.guilds)
-            if guild:
-                roleToAdd = get(guild.roles, name=">> Membre <<")
-                if roleToAdd:
-                    await member.add_roles(roleToAdd)
-                roleToRemove = get(guild.roles, name=">> Invité <<")
-                if roleToRemove:
-                    await member.remove_roles(roleToRemove)
+    try:
+        if message == params['rulesMessageId'] and emoji.name == params['emojiNameToAcceptRules']:
+            if await hasRoles(member, params['onAcceptRulesRolesToRemove']):
+                await removeRoles(member, params['onAcceptRulesRolesToRemove'])
+                await addRoles(member, params['onAcceptRulesRolesToAdd'])
+    except KeyError as error:
+        print(error)
+    except Exception as error:
+        print(error)
 
 @bot.command()
 @commands.is_owner()

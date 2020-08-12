@@ -1,0 +1,7 @@
+{
+  "onJoinRolesToAdd": ">> Invité <<",
+  "onAcceptRulesRolesToRemove": ">> Invité <<",
+  "onAcceptRulesRolesToAdd": ">> Membre <<",
+  "emojiNameToAcceptRules": "valide",
+  "rulesMessageId": 742853196841615421
+}
