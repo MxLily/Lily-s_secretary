@@ -12,7 +12,7 @@ from fileFinder import FileFinder
 print("Start...")
 
 bot = discord.Client()
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='&')
 load_dotenv()
 
 GUILD = int(os.getenv('DISCORD_GUILD_ID', '0'))
@@ -31,35 +31,26 @@ async def on_ready():
 async def on_command_error(ctx, exception):
     await ctx.send(str(exception))
 
-async def addRoles(member, roles):
+async def handleRoles(roles, fct):
     guild = find(lambda g: g.id == GUILD, bot.guilds)
     if guild:
         if isinstance(roles, str):
             role = get(guild.roles, name=roles)
             if role:
-                await member.add_roles(role)
+                await fct(role)
         elif isinstance(roles, list):
-            rolesToAdd = []
+            rolesToSend = []
             for it in roles:
                 role = get(guild.roles, name=it)
                 if role:
-                    rolesToAdd.append(role)
-            await member.add_roles(*rolesToAdd)
+                    rolesToSend.append(role)
+            await fct(*rolesToSend)
+
+async def addRoles(member, roles):
+    await handleRoles(roles, member.add_roles)
 
 async def removeRoles(member, roles):
-    guild = find(lambda g: g.id == GUILD, bot.guilds)
-    if guild:
-        if isinstance(roles, str):
-            role = get(guild.roles, name=roles)
-            if role:
-                await member.remove_roles(role)
-        elif isinstance(roles, list):
-            rolesToRemove = []
-            for it in roles:
-                role = get(guild.roles, name=it)
-                if role:
-                    rolesToRemove.append(role)
-            await member.remove_roles(*rolesToRemove)
+    await handleRoles(roles, member.remove_roles)
 
 async def hasRoles(member, roles):
     if isinstance(roles, str):
@@ -83,7 +74,6 @@ async def on_member_join(member):
         print(error)
 
 # TODO <=> ON MEMBER LEAVE  =>  Remove reaction on rules for member so that he reads them again if he rejoins
-# ? TODO <=> Gather addRoles and removeRoles to avoid duplicated code, by using function pointer on member.add_roles and member.remove_roles
 
 @bot.event
 async def on_raw_reaction_add(payload):
