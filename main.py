@@ -14,7 +14,7 @@ from rolesHandler import hasRoles, addRoles, removeRoles
 print("Start...")
 
 bot = discord.Client()
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='&')
 load_dotenv()
 params = getParams()
 
