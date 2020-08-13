@@ -1,0 +1,15 @@
+{
+  "onJoinRolesToAdd": ">> Invité <<",
+  "onAcceptRulesRolesToRemove": ">> Invité <<",
+  "onAcceptRulesRolesToAdd": ">> Membre <<",
+  "emojiNameToAcceptRules": "valide",
+  "rulesMessageId": 742853196841615421,
+  "rolesThatCannotBeKicked": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCannotBeBanned": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCannotBeMuted": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCannotBeWarned": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCanKick": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCanBan": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCanMute": ["Admin", ">> Staff <<", "King"],
+  "rolesThatCanWarn": ["Admin", ">> Staff <<", "King"]
+}

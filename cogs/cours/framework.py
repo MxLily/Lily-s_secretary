@@ -10,7 +10,7 @@ class Framework(commands.Cog):
     async def framework(self, ctx):
         embed = discord.Embed(
             title = 'Les meilleurs framework',
-            colour = discord.Colour.red()
+            colour = discord.Colour.purple()
         )
         embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
         embed.add_field(name='PHP', value='• Laravel\n• Symfony\n• CakePHP', inline=True)
