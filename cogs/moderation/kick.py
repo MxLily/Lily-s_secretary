@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
+from discord.utils import find
 
-from paramsGetter import getParams
+from paramsGetter import getParams, getGuildId
 from rolesHandler import hasAtLeastOneRole
 
 class Kick(commands.Cog):
@@ -25,8 +26,29 @@ class Kick(commands.Cog):
                         # Check if the target can receive this command
                         if not await hasAtLeastOneRole(member, rolesToAvoid):
                             reasonMsg = reasonMsg = ' '.join(reasons) if reasons else ''
+
+                            embed = discord.Embed(
+                                colour = discord.Colour.purple()
+                            )
+                            embed.set_author(name=self.bot.user.display_name + ' • Kick', icon_url=params['punishmentsAuthorImageUrl'])
+                            # embed.set_author(name=self.bot.user.display_name + ' • Kick ✅', icon_url=params['punishmentsAuthorImageUrl'])
+                            # embed.set_thumbnail(url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
+                            embed.add_field(name='Membre kick', value=member, inline=False)
+                            embed.add_field(name='Kick par', value=author, inline=False)
+                            if reasons:
+                                embed.add_field(name='Raison', value=reasonMsg, inline=False)
+
+                            # Send message to the punishments channel to have a record of the punishment
+                            guildId = await getGuildId()
+                            guild = find(lambda g: g.id == guildId, self.bot.guilds)
+                            if guild:
+                                channel = find(lambda c: c.id == params['punishmentsChannelId'], guild.channels)
+                                if channel:
+                                    await channel.send(embed=embed)
+                            # Send message to the user so that he knows why he got kicked
+                            await member.send(embed=embed)
+                            # Actually kick him
                             await member.kick(reason=reasonMsg)
-                            await ctx.send("L'utilisateur " + str(member) + " a été kick avec succès." + ((" Raison: " + reasonMsg) if reasons else ''))
                         else:
                             await ctx.send("Vous ne pouvez pas kick cet utilisateur à cause des rôles qui lui sont attribués.")
                     else:

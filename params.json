@@ -1,15 +1,18 @@
 {
+  "discordGuildId": 743620714476732577,
   "onJoinRolesToAdd": ">> Invité <<",
+  "rulesMessageId": 743623957487419422,
+  "emojiNameToAcceptRules": "valide",
   "onAcceptRulesRolesToRemove": ">> Invité <<",
   "onAcceptRulesRolesToAdd": ">> Membre <<",
-  "emojiNameToAcceptRules": "valide",
-  "rulesMessageId": 742853196841615421,
-  "rolesThatCannotBeKicked": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCannotBeBanned": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCannotBeMuted": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCannotBeWarned": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCanKick": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCanBan": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCanMute": ["Admin", ">> Staff <<", "King"],
-  "rolesThatCanWarn": ["Admin", ">> Staff <<", "King"]
+  "punishmentsChannelId": 743620716246859918,
+  "punishmentsAuthorImageUrl": "https://mxcommunity.xyz/src/MxCommunity_tr.png",
+  "rolesThatCannotBeKicked": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCannotBeBanned": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCannotBeMuted": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCannotBeWarned": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCanKick": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCanBan": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCanMute": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCanWarn": ["Admin", ">> Staff <<", "Fondatrice"]
 }
