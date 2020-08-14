@@ -69,11 +69,18 @@ async def load(ctx, extension):
 async def unload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
 
-@bot.command()
-async def reload(ctx):
+async def handleReload(ctx):
     unloadCogs()
     loadCogs()
     await ctx.send("Reload completed.")
+
+@bot.command()
+async def reload(ctx):
+    await handleReload(ctx)
+
+@bot.command()
+async def rl(ctx):
+    await handleReload(ctx)
 
 folderToFind = 'cogs'
 fileExtension = '.py'

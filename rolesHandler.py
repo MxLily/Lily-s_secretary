@@ -1,8 +1,7 @@
 import os
 from discord.utils import get, find
 
-async def getGuildId():
-    return int(os.getenv('DISCORD_GUILD_ID', '0'))
+from paramsGetter import getGuildId
 
 async def hasRoles(member, roles):
     if isinstance(roles, str):

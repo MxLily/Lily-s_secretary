@@ -11,3 +11,12 @@ def getParams():
     except Exception as error:
         print(error)
     return params
+
+
+async def getGuildId():
+    params = getParams()
+    try:
+        return params['discordGuildId']
+    except KeyError as error:
+        print(error)
+    return 0
