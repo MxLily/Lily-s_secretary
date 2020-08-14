@@ -18,7 +18,7 @@ class Info(commands.Cog):
 
         embed.set_author(name='MxCommunity',icon_url='https://mxcommunity.xyz/src/MxCommunity_tr.png')
         embed.add_field(name='Info', value='• &info\n• &site\n• &mxlily\n• &brokeos\n', inline=True)
-        #embed.add_field(name='Dev', value='• &framework\n', inline=True)
+        embed.add_field(name='Dev', value='• &framework\n• &logiciel', inline=True)
 
         await ctx.send(embed=embed)
 
