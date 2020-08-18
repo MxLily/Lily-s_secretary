@@ -5,6 +5,8 @@
   "emojiNameToAcceptRules": "valide",
   "onAcceptRulesRolesToRemove": ">> Invité <<",
   "onAcceptRulesRolesToAdd": ">> Membre <<",
+  "roleNameToRemoveAndCopyPermissionsFromToMute": ">> Membre <<",
+  "muteRoleName": "mute",
   "punishmentsChannelId": 743620716246859918,
   "punishmentsAuthorImageUrl": "https://mxcommunity.xyz/src/MxCommunity_tr.png",
   "rolesThatCannotBeKicked": ["Admin", ">> Staff <<", "Fondatrice"],
