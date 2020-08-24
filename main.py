@@ -88,9 +88,9 @@ finder = FileFinder()
 currentFolder = os.path.realpath(__file__)[:(len(__file__) * -1)]
 
 sys.path.append(currentFolder)
-files = finder.find(currentFolder + folderToFind, fileExtension)
 
 def handleCogs(fct):
+    files = finder.find(currentFolder + folderToFind, fileExtension)
     for filename in files:
         toHandle = filename[len(currentFolder):(len(fileExtension) * -1)].replace('/', '.')
         fct(toHandle)

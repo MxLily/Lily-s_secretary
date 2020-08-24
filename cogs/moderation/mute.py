@@ -12,28 +12,37 @@ async def setMutedPermissions(permissions):
     permissions.send_tts_messages = False
     permissions.add_reactions = False
 
-async def createMuteRole(guild: discord.Guild, roleToCopyPermissionsFrom: discord.Role, muteRoleName: str):
-    muteRole = get(guild.roles, name=muteRoleName)
+async def addPermissions(destination: discord.PermissionOverwrite, overwrite: discord.PermissionOverwrite):
+    for perm, value in overwrite:
+        if getattr(destination, perm) is not True and (value is not None):
+            setattr(destination, perm, value)
 
-    if not muteRole:
-        await guild.create_role(name=muteRoleName)
-        muteRole = get(guild.roles, name=muteRoleName)
+async def muteMember(member: discord.Member, guild: discord.Guild):
+    roles = member.roles
+    mutePermissions = await setMutedPermissions(discord.PermissionOverwrite())
 
     for channel in guild.text_channels:
         await asyncio.sleep(0)
 
-        mutePermissions = discord.PermissionOverwrite()
-        await setMutedPermissions(mutePermissions)
+        # Resulting overwrite
+        newOverwrite = discord.PermissionOverwrite()
 
-        if roleToCopyPermissionsFrom:
-            overwrites = channel.overwrites_for(roleToCopyPermissionsFrom)
-            if overwrites.is_empty():
-                await channel.set_permissions(muteRole, overwrite=mutePermissions)
-            else:
-                await setMutedPermissions(overwrites)
-                await channel.set_permissions(muteRole, overwrite=overwrites)
+        # Gather all permissions and restrictions
+        memberOverwrite = channel.overwrites_for(member)
+        channelOverwrites = []
+        for role in roles:
+            channelOverwrites.append(channel.overwrites_for(role))
 
-    return muteRole
+        # Add all permissions and restrictions to the resulting overwrite
+        for channelOverwrite in channelOverwrites:
+            await addPermissions(newOverwrite, channelOverwrite)
+        await addPermissions(newOverwrite, memberOverwrite)
+
+        # Set restrictions so that user is being muted
+        await setMutedPermissions(newOverwrite)
+        await channel.set_permissions(member, overwrite=newOverwrite)
+
+    await member.edit(roles=[])
 
 class Mute(commands.Cog):
 
@@ -45,6 +54,7 @@ class Mute(commands.Cog):
     async def mute(self, ctx, member: discord.Member, *args):
         try:
             author = ctx.author
+            guild = ctx.message.guild
             # Check if author is a user (i.e. not a bot)
             if not author.bot:
                 params = getParams()
@@ -81,27 +91,20 @@ class Mute(commands.Cog):
                                 else:
                                     embed.add_field(name='Fin de la sanction', value=endMessage, inline=False)
 
-                                guild = ctx.message.guild
-                                roleToRemoveAndCopyPermissionsFrom = get(guild.roles, name=params['roleNameToRemoveAndCopyPermissionsFromToMute'])
-                                muteRole = await createMuteRole(guild, roleToRemoveAndCopyPermissionsFrom, params['muteRoleName'])
-
-                                # Mute user by removing a role and replacing it by a muted version of this role
-                                await member.remove_roles(roleToRemoveAndCopyPermissionsFrom)
-                                await member.add_roles(muteRole)
+                                await muteMember(member, guild)
 
                                 # await ctx.send(embed=embed)
                                 # TODO Verify if user is already muted and if so send a message to tell the author the target is already muted
                                 # TODO Actually mute the user until endDate (i.e. mute now and unmute at the end of the punishment by making sure that shutting server won't break everything)
 
-                                # Send message to the punishments channel to have a record of the punishment
-                                guildId = await getGuildId()
-                                guild = find(lambda g: g.id == guildId, self.bot.guilds)
-                                if guild:
-                                    channel = find(lambda c: c.id == params['punishmentsChannelId'], guild.channels)
-                                    if channel:
-                                        await channel.send(embed=embed)
-                                # Send message to the user so that he knows why he got muted
-                                await member.send(embed=embed)
+                                await ctx.send(embed=embed)
+                                # # Send message to the punishments channel to have a record of the punishment
+                                # if guild:
+                                #     channel = find(lambda c: c.id == params['punishmentsChannelId'], guild.channels)
+                                #     if channel:
+                                #         await channel.send(embed=embed)
+                                # # Send message to the user so that he knows why he got muted
+                                # await member.send(embed=embed)
                             else:
                                 await ctx.send("Cet utilisateur est déjà mute. Vous ne pouvez donc pas effectuer cette commande.")
                         else:

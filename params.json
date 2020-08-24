@@ -16,5 +16,7 @@
   "rolesThatCanKick": ["Admin", ">> Staff <<", "Fondatrice"],
   "rolesThatCanBan": ["Admin", ">> Staff <<", "Fondatrice"],
   "rolesThatCanMute": ["Admin", ">> Staff <<", "Fondatrice"],
-  "rolesThatCanWarn": ["Admin", ">> Staff <<", "Fondatrice"]
+  "rolesThatCanWarn": ["Admin", ">> Staff <<", "Fondatrice"],
+  "rolesThatCanClear": ["Admin", ">> Staff <<", "Fondatrice"],
+  "logsChannelId": 743620716246859917
 }

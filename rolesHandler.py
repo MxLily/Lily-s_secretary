@@ -45,3 +45,33 @@ async def addRoles(bot, member, roles):
 
 async def removeRoles(bot, member, roles):
     await handleRoles(bot, roles, member.remove_roles)
+
+async def createMuteRole(guild: discord.Guild, roleToCopyPermissionsFrom: discord.Role, muteRoleName: str):
+    muteRole = get(guild.roles, name=muteRoleName)
+
+    if not muteRole:
+        await guild.create_role(name=muteRoleName)
+        muteRole = get(guild.roles, name=muteRoleName)
+
+    for channel in guild.text_channels:
+        await asyncio.sleep(0)
+
+        mutePermissions = discord.PermissionOverwrite()
+        await setMutedPermissions(mutePermissions)
+
+        if roleToCopyPermissionsFrom:
+            overwrites = channel.overwrites_for(roleToCopyPermissionsFrom)
+            if overwrites.is_empty():
+                await channel.set_permissions(muteRole, overwrite=mutePermissions)
+            else:
+                await setMutedPermissions(overwrites)
+                await channel.set_permissions(muteRole, overwrite=overwrites)
+
+    return muteRole
+
+async def deleteMuteRole(guild: discord.Guild, muteRoleName: str):
+    muteRole = get(guild.roles, name=muteRoleName)
+    if muteRole:
+        for channel in guild.text_channels:
+            await asyncio.sleep(0)
+            await channel.set_permissions(muteRole, overwrite=None)
