@@ -40,7 +40,6 @@ class Unmute(commands.Cog):
                         embed.add_field(name='Unmute par', value=author, inline=False)
 
                         await unmuteMember(member, guild)
-                        await deleteMuteRole(guild, params['muteRoleName'])
 
                         await ctx.send(embed=embed)
                         # TODO Verify if user is already muted and if so send a message to tell the author the target is already muted

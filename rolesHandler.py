@@ -1,4 +1,5 @@
 import os
+import discord
 from discord.utils import get, find
 
 from paramsGetter import getGuildId
