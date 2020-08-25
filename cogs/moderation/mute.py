@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands
 from discord.utils import find, get
 import asyncio
+from datetime import datetime
+from os.path import exists, isfile
 
 from paramsGetter import getParams, getGuildId
 from rolesHandler import hasAtLeastOneRole
 from timeParser import TimeParser
+from cogs.moderation.unmute import unmuteMember
 
 async def setMutedPermissions(permissions):
     permissions.send_messages = False
@@ -17,9 +20,16 @@ async def addPermissions(destination: discord.PermissionOverwrite, overwrite: di
         if getattr(destination, perm) is not True and (value is not None):
             setattr(destination, perm, value)
 
-async def muteMember(member: discord.Member, guild: discord.Guild):
+async def muteMember(member: discord.Member, guild: discord.Guild, endDate: datetime, params):
     roles = member.roles
     mutePermissions = await setMutedPermissions(discord.PermissionOverwrite())
+
+    # MemberId;GuildId;EndDate;MemberRolesId;ActualEndDate
+    saveLine = ';'.join((str(member.id), str(guild.id), str(endDate) if endDate else '', ','.join(str(role.id) for role in roles), '')) + '\n'
+    if 'savePunishments' in params and 'mute' in params['savePunishments']:
+        saveFile = params['savePunishments']['mute']
+        with open(saveFile, 'a+') as f:
+            f.write(saveLine)
 
     for channel in guild.text_channels:
         await asyncio.sleep(0)
@@ -44,6 +54,31 @@ async def muteMember(member: discord.Member, guild: discord.Guild):
 
     await member.edit(roles=[])
 
+    if endDate:
+        delta = (endDate - datetime.now()).total_seconds()
+        await asyncio.sleep(delta)
+        await unmuteMember(member, guild, params)
+
+async def alreadyMuted(member: discord.Member, guild: discord.Guild, params):
+    saveFile = params['savePunishments']['mute']
+    if not exists(saveFile) or not isfile(saveFile):
+        return False
+    index = -1
+    with open(saveFile, 'r') as f:
+        lines = f.readlines()
+        i = 0
+        for line in lines:
+            elements = line.rstrip().split(';')
+            memberId = int(elements[0])
+            guildId = int(elements[1])
+            actualEndDate = elements[4]
+            if memberId == member.id and guildId == guild.id and not actualEndDate:
+                index = i
+            i += 1
+    if index >= 0:
+        return True
+    return False
+
 class Mute(commands.Cog):
 
     def __init__(self, bot):
@@ -67,7 +102,7 @@ class Mute(commands.Cog):
                         # Check if the target can receive this command
                         if not await hasAtLeastOneRole(member, rolesToAvoid):
                             # Check if target is already being muted
-                            if True:
+                            if not await alreadyMuted(member, guild, params):
                                 embed = discord.Embed(
                                     colour = discord.Colour.purple()
                                 )
@@ -91,20 +126,20 @@ class Mute(commands.Cog):
                                 else:
                                     embed.add_field(name='Fin de la sanction', value=endMessage, inline=False)
 
-                                await muteMember(member, guild)
-
                                 # await ctx.send(embed=embed)
                                 # TODO Verify if user is already muted and if so send a message to tell the author the target is already muted
                                 # TODO Actually mute the user until endDate (i.e. mute now and unmute at the end of the punishment by making sure that shutting server won't break everything)
 
-                                await ctx.send(embed=embed)
-                                # # Send message to the punishments channel to have a record of the punishment
-                                # if guild:
-                                #     channel = find(lambda c: c.id == params['punishmentsChannelId'], guild.channels)
-                                #     if channel:
-                                #         await channel.send(embed=embed)
-                                # # Send message to the user so that he knows why he got muted
-                                # await member.send(embed=embed)
+                                # Send message to the punishments channel to have a record of the punishment
+                                if guild:
+                                    channel = find(lambda c: c.id == params['punishmentsChannelId'], guild.channels)
+                                    if channel:
+                                        await channel.send(embed=embed)
+                                # Send message to the user so that he knows why he got muted
+                                await member.send(embed=embed)
+
+                                # Actually mute the member
+                                await muteMember(member, guild, endDate, params)
                             else:
                                 await ctx.send("Cet utilisateur est déjà mute. Vous ne pouvez donc pas effectuer cette commande.")
                         else:

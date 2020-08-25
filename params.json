@@ -18,5 +18,8 @@
   "rolesThatCanMute": ["Admin", ">> Staff <<", "Fondatrice"],
   "rolesThatCanWarn": ["Admin", ">> Staff <<", "Fondatrice"],
   "rolesThatCanClear": ["Admin", ">> Staff <<", "Fondatrice"],
-  "logsChannelId": 743620716246859917
+  "logsChannelId": 743620716246859917,
+  "savePunishments": {
+    "mute": "mute.txt"
+  }
 }
