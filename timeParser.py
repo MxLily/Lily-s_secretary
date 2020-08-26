@@ -97,8 +97,10 @@ class TimeParser(object):
         if len(matches) < 1:
             return -1, False
         for match in matches:
-            if not match[1] or match[0].lower() == 'def':
+            if match[0].lower() == 'def':
                 return -1, True
+            if not match[1]:
+                return -1, False
             value = int(match[0])
             multiplicator = self.getMultiplicator(match[1], value)
             if not isinstance(multiplicator, int):
@@ -154,7 +156,9 @@ if __name__ == "__main__":
         ('8mois',),
         ('2semaines',),
         ('2ans', 'Yolo'),
-        ('1a1M1S1j1h1m1s', 'Pour', 'tester')
+        ('1a1M1S1j1h1m1s', 'Pour', 'tester'),
+        ('2j', '1200tokens'),
+        ('2j', '1800', 'tokens')
     ]
 
     timeParser = TimeParser()
@@ -167,3 +171,4 @@ if __name__ == "__main__":
         else:
             print('infinite')
         print(index)
+        print(test[index:])
